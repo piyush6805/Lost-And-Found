@@ -12,6 +12,9 @@ import {
   updateItemStart,
   updateItemSuccess,
   updateItemFail,
+  getHistoryStart, 
+  getHistorySuccess,
+  getHistoryFail,
 } from '../redux/itemSlice';
 
 const API_URL = '/api/items';
@@ -64,6 +67,21 @@ export const closeCase = async (dispatch, id, token) => {
         ? error.response.data.message
         : error.message;
     dispatch(updateItemFail(message));
+  }
+};
+
+// Get all closed items
+export const getHistory = async (dispatch) => {
+  dispatch(getHistoryStart());
+  try {
+    const res = await axios.get(`${API_URL}/history`);
+    dispatch(getHistorySuccess(res.data));
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    dispatch(getHistoryFail(message));
   }
 };
 

@@ -18,6 +18,9 @@ const Header = () => {
         <h2>Lost & Found</h2>
       </Link>
       <nav>
+        <Link to="/history">
+          Case History
+        </Link>
         {user ? (
           <>
             <Link to="/create-post">

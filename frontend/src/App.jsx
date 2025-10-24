@@ -12,6 +12,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import PublicRoute from './components/PublicRoute';
 import CreatePostPage from './pages/CreatePostPage';
 import ItemDetailsPage from './pages/ItemDetailsPage'; 
+import HistoryPage from './pages/HistoryPage';
 
 function App() {
   const dispatch = useDispatch();
@@ -62,7 +63,8 @@ function App() {
             }
           />
           <Route path="/item/:id" element={<ItemDetailsPage />} />
-
+          <Route path="/history" element={<HistoryPage />} />
+          
           {/* Protected Routes */}
           <Route
             path="/profile"

@@ -1,6 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import Item from '../models/itemModel.js';
 
+
 // @desc    Create a new item
 // @route   POST /api/items
 // @access  Private
@@ -76,4 +77,15 @@ const closeItemCase = asyncHandler(async (req, res) => {
   res.json(updatedItem);
 });
 
-export { createItem, getAllOpenItems, getItemById, closeItemCase };
+// @desc    Fetch all 'closed' items
+// @route   GET /api/items/history
+// @access  Public
+const getClosedItems = asyncHandler(async (req, res) => {
+  const items = await Item.find({ status: 'closed' })
+    .populate('user', 'name') // We just need the user's name
+    .sort({ updatedAt: -1 }); // Show most recently closed first
+
+  res.json(items);
+});
+
+export { createItem, getAllOpenItems, getItemById, closeItemCase, getClosedItems };

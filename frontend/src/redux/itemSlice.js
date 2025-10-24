@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   items: [], // This will hold all items for the homepage
   currentItem: null, // This will hold the single item for the details page
+  historyItems: [], // This will hold closed items for history page
   loading: false,
   error: null,
 };
@@ -73,6 +74,18 @@ const itemSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    getHistoryStart: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    getHistorySuccess: (state, action) => {
+      state.loading = false;
+      state.historyItems = action.payload;
+    },
+    getHistoryFail: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
   },
 });
 
@@ -89,6 +102,9 @@ export const {
   updateItemStart,
   updateItemSuccess,
   updateItemFail,
+  getHistoryStart, 
+  getHistorySuccess,
+  getHistoryFail,
 } = itemSlice.actions;
 
 export default itemSlice.reducer;
