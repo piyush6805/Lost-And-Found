@@ -10,22 +10,19 @@ import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
 import ProtectedRoute from './components/ProtectedRoute';
 import PublicRoute from './components/PublicRoute';
+import CreatePostPage from './pages/CreatePostPage';
+import ItemDetailsPage from './pages/ItemDetailsPage'; 
 
 function App() {
   const dispatch = useDispatch();
-  // We need 'loading' for the global loading check
   const { token, loading } = useSelector((state) => state.auth);
 
-  // This hook now runs on EVERY app load
   useEffect(() => {
-    // If we have a token (from localStorage), try to fetch the user's profile
     if (token) {
       getUserProfile(dispatch, token);
     }
-  }, [token, dispatch]); // Runs once when token is loaded
+  }, [token, dispatch]);
 
-  // This check prevents the app from "flickering"
-  // It shows a loading screen only on the initial profile fetch
   if (loading && token) {
     return (
       <div
@@ -41,7 +38,6 @@ function App() {
     );
   }
 
-  // Once loading is false, or if there's no token, render the app
   return (
     <>
       <Header />
@@ -65,6 +61,7 @@ function App() {
               </PublicRoute>
             }
           />
+          <Route path="/item/:id" element={<ItemDetailsPage />} />
 
           {/* Protected Routes */}
           <Route
@@ -72,6 +69,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/create-post"
+            element={
+              <ProtectedRoute>
+                <CreatePostPage />
               </ProtectedRoute>
             }
           />

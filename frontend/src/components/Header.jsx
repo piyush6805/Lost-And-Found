@@ -9,7 +9,6 @@ const Header = () => {
 
   const handleLogout = () => {
     dispatch(logout());
-    
   };
 
   return (
@@ -27,6 +26,10 @@ const Header = () => {
       <nav>
         {user ? (
           <>
+            <Link to="/create-post" style={{ marginRight: '1rem' }}>
+              Create Post
+            </Link>
+
             <Link to="/profile" style={{ marginRight: '1rem' }}>
               Hi, {user.name}
             </Link>
