@@ -3,12 +3,15 @@ import {
   getItemsStart,
   getItemsSuccess,
   getItemsFail,
-  getItemStart, // <-- ADD
-  getItemSuccess, // <-- ADD
-  getItemFail, // <-- ADD
+  getItemStart, 
+  getItemSuccess, 
+  getItemFail,
   createItemStart,
   createItemSuccess,
   createItemFail,
+  updateItemStart,
+  updateItemSuccess,
+  updateItemFail,
 } from '../redux/itemSlice';
 
 const API_URL = '/api/items';
@@ -28,7 +31,6 @@ export const getAllItems = async (dispatch) => {
   }
 };
 
-// --- ADD THIS NEW FUNCTION ---
 // Get single item by ID
 export const getItemById = async (dispatch, id) => {
   dispatch(getItemStart());
@@ -43,7 +45,27 @@ export const getItemById = async (dispatch, id) => {
     dispatch(getItemFail(message));
   }
 };
-// --- END OF NEW FUNCTION ---
+
+// Close an item's case
+export const closeCase = async (dispatch, id, token) => {
+  dispatch(updateItemStart());
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`, // Token is required
+      },
+    };
+
+    const res = await axios.put(`${API_URL}/${id}/close`, {}, config);
+    dispatch(updateItemSuccess(res.data));
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    dispatch(updateItemFail(message));
+  }
+};
 
 // Create a new item
 export const createItem = async (dispatch, itemData, token) => {

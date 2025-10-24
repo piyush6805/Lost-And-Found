@@ -53,4 +53,27 @@ const getItemById = asyncHandler(async (req, res) => {
   }
 });
 
-export { createItem, getAllOpenItems, getItemById };
+// @desc    Update item status to 'closed'
+// @route   PUT /api/items/:id/close
+// @access  Private
+const closeItemCase = asyncHandler(async (req, res) => {
+  const item = await Item.findById(req.params.id);
+
+  if (!item) {
+    res.status(404);
+    throw new Error('Item not found');
+  }
+
+  // Check if the person closing the case is the one who posted it
+  if (item.user.toString() !== req.user._id.toString()) {
+    res.status(401);
+    throw new Error('User not authorized');
+  }
+
+  item.status = 'closed';
+  const updatedItem = await item.save();
+
+  res.json(updatedItem);
+});
+
+export { createItem, getAllOpenItems, getItemById, closeItemCase };

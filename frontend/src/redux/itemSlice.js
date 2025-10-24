@@ -54,6 +54,25 @@ const itemSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    updateItemStart: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    updateItemSuccess: (state, action) => {
+      state.loading = false;
+      // Replace the item in the 'items' array
+      state.items = state.items.map((item) =>
+        item._id === action.payload._id ? action.payload : item
+      );
+      // Also update the 'currentItem' if it's the one being viewed
+      if (state.currentItem && state.currentItem._id === action.payload._id) {
+        state.currentItem = action.payload;
+      }
+    },
+    updateItemFail: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
   },
 });
 
@@ -67,6 +86,9 @@ export const {
   createItemStart,
   createItemSuccess,
   createItemFail,
+  updateItemStart,
+  updateItemSuccess,
+  updateItemFail,
 } = itemSlice.actions;
 
 export default itemSlice.reducer;
