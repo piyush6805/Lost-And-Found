@@ -10,7 +10,7 @@ const ItemDetailsPage = () => {
   const navigate = useNavigate();
 
   const { currentItem, loading, error } = useSelector((state) => state.item);
-  const { user, token } = useSelector((state) => state.auth);
+  const { user, token } = useSelector((state) => state.auth); // Get auth state
 
   useEffect(() => {
     // Fetch the item details when the component loads
@@ -20,10 +20,9 @@ const ItemDetailsPage = () => {
   const handleCloseCase = () => {
     if (window.confirm('Are you sure you want to close this case?')) {
       closeCase(dispatch, id, token);
-      // Optional: navigate away after closing
-      // navigate('/'); 
     }
   };
+
   if (loading && !currentItem) {
     return <div>Loading item details...</div>;
   }
@@ -36,21 +35,28 @@ const ItemDetailsPage = () => {
     return <div>Item not found.</div>;
   }
 
+  // Check if the logged-in user is the owner
   const isOwner = user && user._id === currentItem.user._id;
+
+  // Define placeholder
+  const placeholder = 'https://via.placeholder.com/350x250.png?text=No+Image';
 
   // Styles
   const pageStyle = {
     padding: '2rem',
     maxWidth: '800px',
-    margin: '0 auto',
-    
+    margin: '2rem auto',
+    background: '#fff',
+    borderRadius: '8px',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
   };
 
   const imageStyle = {
-    width: '10I0%',
+    width: '100%',
     maxHeight: '400px',
     objectFit: 'contain',
     borderRadius: '8px',
+    background: '#f0f0f0',
   };
 
   const infoStyle = {
@@ -62,10 +68,14 @@ const ItemDetailsPage = () => {
 
   const postTypeStyle = {
     fontWeight: 'bold',
-    fontSize: '1.2rem',
-    color: currentItem.postType === 'lost' ? 'red' : 'green',
+    fontSize: '1.5rem',
+    color:
+      currentItem.status === 'closed'
+        ? '#555'
+        : currentItem.postType === 'lost'
+        ? 'red'
+        : 'green',
     textTransform: 'uppercase',
-    color: currentItem.status === 'closed' ? '#555' : (currentItem.postType === 'lost' ? 'red' : 'green'),
   };
 
   const closeButtonStyle = {
@@ -73,18 +83,18 @@ const ItemDetailsPage = () => {
     color: 'white',
     width: '100%',
     marginTop: '1rem',
-    fontSize: '1.1rem'
-  }
+    fontSize: '1.1rem',
+  };
 
   return (
     <div style={pageStyle}>
       <h1 style={postTypeStyle}>
-        {/* {currentItem.postType}: {currentItem.title} */}
-        {`[${currentItem.status.toUpperCase()}]`} {currentItem.postType}: {currentItem.title}
+        {`[${currentItem.status.toUpperCase()}]`}{' '}
+        {currentItem.postType}: {currentItem.title}
       </h1>
 
       <img
-        src={currentItem.itemImage}
+        src={currentItem.itemImage || placeholder}
         alt={currentItem.title}
         style={imageStyle}
       />
@@ -121,8 +131,8 @@ const ItemDetailsPage = () => {
       </div>
 
       {isOwner && currentItem.status === 'open' && (
-        <button 
-          onClick={handleCloseCase} 
+        <button
+          onClick={handleCloseCase}
           style={closeButtonStyle}
           disabled={loading}
         >
@@ -131,9 +141,16 @@ const ItemDetailsPage = () => {
       )}
 
       {currentItem.status === 'closed' && (
-         <p style={{...closeButtonStyle, background: '#6c757d', textAlign: 'center'}}>This case is closed.</p>
+        <p
+          style={{
+            ...closeButtonStyle,
+            background: '#6c757d',
+            textAlign: 'center',
+          }}
+        >
+          This case is closed.
+        </p>
       )}
-      
     </div>
   );
 };

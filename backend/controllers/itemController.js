@@ -1,12 +1,12 @@
 import asyncHandler from 'express-async-handler';
 import Item from '../models/itemModel.js';
 
-
 // @desc    Create a new item
 // @route   POST /api/items
 // @access  Private
 const createItem = asyncHandler(async (req, res) => {
-  const { title, description, category, postType, location } = req.body;
+  // 1. Destructure itemImage from req.body
+  const { title, description, category, postType, location, itemImage } = req.body;
 
   if (!title || !description || !category || !postType) {
     res.status(400);
@@ -19,6 +19,7 @@ const createItem = asyncHandler(async (req, res) => {
     category,
     postType,
     location,
+    itemImage, // 2. Add it here
     user: req.user._id, // Get user from 'protect' middleware
   });
 
@@ -88,4 +89,10 @@ const getClosedItems = asyncHandler(async (req, res) => {
   res.json(items);
 });
 
-export { createItem, getAllOpenItems, getItemById, closeItemCase, getClosedItems };
+export {
+  createItem,
+  getAllOpenItems,
+  getItemById,
+  closeItemCase,
+  getClosedItems,
+};

@@ -33,10 +33,10 @@ const itemSchema = mongoose.Schema(
     },
     itemImage: {
       type: String,
-      default: 'https://via.placeholder.com/350x250.png?text=No+Image', // A default placeholder
+      default: null, // Correctly set to null
     },
     location: {
-      type: String, // e.g., "Library", "Cafeteria"
+      type: String, // e.g. "Library", "Cafeteria"
     },
   },
   {
