@@ -12,25 +12,18 @@ const Header = () => {
   };
 
   return (
-    <header
-      style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        padding: '1rem',
-        background: '#eee',
-      }}
-    >
+
+    <header> 
       <Link to="/">
         <h2>Lost & Found</h2>
       </Link>
       <nav>
         {user ? (
           <>
-            <Link to="/create-post" style={{ marginRight: '1rem' }}>
+            <Link to="/create-post">
               Create Post
             </Link>
-
-            <Link to="/profile" style={{ marginRight: '1rem' }}>
+            <Link to="/profile">
               Hi, {user.name}
             </Link>
             <button onClick={handleLogout}>Logout</button>
