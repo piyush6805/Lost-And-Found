@@ -32,13 +32,37 @@ const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.token = null;
-      localStorage.removeItem('token'); // Remove token
+      localStorage.removeItem('token'); 
+    },
+
+    // Reducers for getting profile
+    getProfileStart: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    getProfileSuccess: (state, action) => {
+      state.loading = false;
+      state.user = action.payload; // Payload is just the user object
+    },
+    getProfileFail: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+      state.token = null; // Token is invalid or expired, so log them out
+      localStorage.removeItem('token');
     },
   },
 });
 
 // Export the actions
-export const { authStart, authSuccess, authFail, logout } = authSlice.actions;
+export const {
+  authStart,
+  authSuccess,
+  authFail,
+  logout,
+  getProfileStart,
+  getProfileSuccess,
+  getProfileFail,
+} = authSlice.actions;
 
 // Export the reducer
 export default authSlice.reducer;
