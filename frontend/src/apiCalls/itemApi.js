@@ -3,8 +3,8 @@ import {
   getItemsStart,
   getItemsSuccess,
   getItemsFail,
-  getItemStart, 
-  getItemSuccess, 
+  getItemStart,
+  getItemSuccess,
   getItemFail,
   createItemStart,
   createItemSuccess,
@@ -12,12 +12,13 @@ import {
   updateItemStart,
   updateItemSuccess,
   updateItemFail,
-  getHistoryStart, 
+  getHistoryStart,
   getHistorySuccess,
   getHistoryFail,
 } from '../redux/itemSlice';
 
-const API_URL = '/api/items';
+// Use the environment variable for the base URL
+const API_URL = `${import.meta.env.VITE_API_URL}/api/items`;
 
 // Get all open items
 export const getAllItems = async (dispatch) => {
@@ -46,6 +47,30 @@ export const getItemById = async (dispatch, id) => {
         ? error.response.data.message
         : error.message;
     dispatch(getItemFail(message));
+  }
+};
+
+// Create a new item
+export const createItem = async (dispatch, itemData, token) => {
+  dispatch(createItemStart());
+  try {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`, // Token is required
+      },
+    };
+
+    const res = await axios.post(API_URL, itemData, config);
+    dispatch(createItemSuccess(res.data));
+    return true; // Return success
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    dispatch(createItemFail(message));
+    return false; // Return failure
   }
 };
 
@@ -82,29 +107,5 @@ export const getHistory = async (dispatch) => {
         ? error.response.data.message
         : error.message;
     dispatch(getHistoryFail(message));
-  }
-};
-
-// Create a new item
-export const createItem = async (dispatch, itemData, token) => {
-  dispatch(createItemStart());
-  try {
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`, // Token is required
-      },
-    };
-
-    const res = await axios.post(API_URL, itemData, config);
-    dispatch(createItemSuccess(res.data));
-    return true; // Return success
-  } catch (error) {
-    const message =
-      error.response && error.response.data.message
-        ? error.response.data.message
-        : error.message;
-    dispatch(createItemFail(message));
-    return false; // Return failure
   }
 };

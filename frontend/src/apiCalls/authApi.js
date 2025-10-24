@@ -6,10 +6,11 @@ import {
   getProfileStart,
   getProfileSuccess,
   getProfileFail,
-  updateProfileSuccess, // <-- 1. IMPORT
+  updateProfileSuccess,
 } from '../redux/authSlice';
 
-const API_URL = '/api/users';
+// Use the environment variable for the base URL
+const API_URL = `${import.meta.env.VITE_API_URL}/api/users`;
 
 /**
  * @param {function} dispatch - The Redux dispatch function
@@ -76,7 +77,6 @@ export const getUserProfile = async (dispatch, token) => {
   }
 };
 
-// --- 2. ADD THIS NEW FUNCTION ---
 /**
  * @param {function} dispatch - The Redux dispatch function
  * @param {object} userData - { name, email, contactNumber, password }

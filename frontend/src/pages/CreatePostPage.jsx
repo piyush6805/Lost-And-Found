@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { createItem } from '../apiCalls/itemApi';
 import axios from 'axios';
 
+// Get the base URL
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+
 const CreatePostPage = () => {
   // --- Form State ---
   const [title, setTitle] = useState('');
@@ -15,7 +18,6 @@ const CreatePostPage = () => {
   // --- Image State ---
   const [itemImage, setItemImage] = useState('');
   const [uploading, setUploading] = useState(false);
-  // 1. ADD NEW ERROR STATE
   const [uploadError, setUploadError] = useState(null);
 
   const dispatch = useDispatch();
@@ -24,7 +26,6 @@ const CreatePostPage = () => {
   const { token } = useSelector((state) => state.auth);
   const { loading: itemLoading, error } = useSelector((state) => state.item);
 
-  // --- 2. MODIFIED File Upload Handler ---
   const uploadFileHandler = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -32,7 +33,7 @@ const CreatePostPage = () => {
     const formData = new FormData();
     formData.append('image', file);
     setUploading(true);
-    setUploadError(null); // Clear previous errors
+    setUploadError(null);
 
     try {
       const config = {
@@ -42,21 +43,26 @@ const CreatePostPage = () => {
         },
       };
 
-      const { data } = await axios.post('/api/upload', formData, config);
+      // Use the full, dynamic URL
+      const { data } = await axios.post(
+        `${API_BASE_URL}/api/upload`,
+        formData,
+        config
+      );
 
-      // --- THIS IS THE MOST IMPORTANT CONSOLE LOG ---
       console.log('Server Upload Response:', data);
 
       if (data && data.url) {
-        setItemImage(data.url); // Set the returned URL
+        setItemImage(data.url);
         setUploading(false);
       } else {
         throw new Error('Server did not return a valid URL');
       }
     } catch (error) {
       console.error('Upload Error:', error);
-      // Show error to the user
-      setUploadError('Image upload failed. Please try a different image or try again later.');
+      setUploadError(
+        'Image upload failed. Please try a different image or try again later.'
+      );
       setUploading(false);
     }
   };
@@ -158,8 +164,6 @@ const CreatePostPage = () => {
             onChange={uploadFileHandler}
           />
           {uploading && <p>Uploading image...</p>}
-          
-          {/* 3. SHOW THE UPLOAD ERROR */}
           {uploadError && <p style={{ color: 'red' }}>{uploadError}</p>}
         </div>
 
