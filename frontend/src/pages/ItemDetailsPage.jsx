@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom'; // <-- Add Link
 import { useDispatch, useSelector } from 'react-redux';
 import { getItemById } from '../apiCalls/itemApi';
 import { closeCase } from '../apiCalls/itemApi';
@@ -118,9 +118,16 @@ const ItemDetailsPage = () => {
 
       <div style={infoStyle}>
         <h3>Contact Info</h3>
+        
+        {/* --- THIS IS THE CHANGE --- */}
         <p>
-          <strong>Posted by:</strong> {currentItem.user.name}
+          <strong>Posted by:</strong>{' '}
+          <Link to={`/user/${currentItem.user._id}`}>
+            {currentItem.user.name}
+          </Link>
         </p>
+        {/* --- END OF CHANGE --- */}
+
         <p>
           <strong>Contact Email:</strong> {currentItem.user.email}
         </p>

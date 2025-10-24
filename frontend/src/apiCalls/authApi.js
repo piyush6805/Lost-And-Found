@@ -6,6 +6,7 @@ import {
   getProfileStart,
   getProfileSuccess,
   getProfileFail,
+  updateProfileSuccess, // <-- 1. IMPORT
 } from '../redux/authSlice';
 
 const API_URL = '/api/users';
@@ -19,8 +20,6 @@ export const registerUser = async (dispatch, userData) => {
   try {
     const res = await axios.post(`${API_URL}/register`, userData);
 
-    // Backend returns { _id, name, email, ..., token }
-    // We split it for our Redux state
     const { token, ...user } = res.data;
     dispatch(authSuccess({ user, token }));
   } catch (error) {
@@ -41,7 +40,6 @@ export const loginUser = async (dispatch, userData) => {
   try {
     const res = await axios.post(`${API_URL}/login`, userData);
 
-    // Backend returns { _id, name, email, ..., token }
     const { token, ...user } = res.data;
     dispatch(authSuccess({ user, token }));
   } catch (error) {
@@ -60,7 +58,6 @@ export const loginUser = async (dispatch, userData) => {
 export const getUserProfile = async (dispatch, token) => {
   dispatch(getProfileStart());
   try {
-    // We must send the token in the headers
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -69,14 +66,42 @@ export const getUserProfile = async (dispatch, token) => {
 
     const res = await axios.get(`${API_URL}/profile`, config);
 
-    // The backend just returns the user object
     dispatch(getProfileSuccess(res.data));
   } catch (error) {
     const message =
       error.response && error.response.data.message
         ? error.response.data.message
         : error.message;
-    // If the token is bad, this will log the user out
     dispatch(getProfileFail(message));
+  }
+};
+
+// --- 2. ADD THIS NEW FUNCTION ---
+/**
+ * @param {function} dispatch - The Redux dispatch function
+ * @param {object} userData - { name, email, contactNumber, password }
+ * @param {string} token - The auth token
+ */
+export const updateUserProfile = async (dispatch, userData, token) => {
+  dispatch(authStart()); // Re-use authStart for loading
+  try {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const res = await axios.put(`${API_URL}/profile`, userData, config);
+
+    // Split the response
+    const { token: newToken, ...user } = res.data;
+    dispatch(updateProfileSuccess({ user, token: newToken }));
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    dispatch(authFail(message));
   }
 };

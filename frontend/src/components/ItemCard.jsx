@@ -42,7 +42,10 @@ const ItemCard = ({ item }) => {
 
   return (
     <div style={cardStyle}>
-      <Link to={`/item/${item._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+      <Link
+        to={`/item/${item._id}`}
+        style={{ textDecoration: 'none', color: 'inherit' }}
+      >
         <div style={imageContainerStyle}>
           <img
             src={item.itemImage || placeholder}
@@ -53,15 +56,21 @@ const ItemCard = ({ item }) => {
         <h3>{item.title}</h3>
       </Link>
       <p style={postTypeStyle}>{item.postType}</p>
-      <p style={{ fontSize: '0.9rem', color: '#555' }}>
-        Posted by: {item.user.name}
-      </p>
-      <p style={{ fontSize: '0.9rem', color: '#555' }}>Location: {item.location || 'N/A'}</p>
       
-      <Link 
-        to={`/item/${item._id}`} 
-        className="button-link" 
-        style={{marginTop: '1rem', display: 'block'}}
+      {/* --- THIS IS THE CHANGE --- */}
+      <p style={{ fontSize: '0.9rem', color: '#555' }}>
+        Posted by: <Link to={`/user/${item.user._id}`}>{item.user.name}</Link>
+      </p>
+      {/* --- END OF CHANGE --- */}
+
+      <p style={{ fontSize: '0.9rem', color: '#555' }}>
+        Location: {item.location || 'N/A'}
+      </p>
+
+      <Link
+        to={`/item/${item._id}`}
+        className="button-link"
+        style={{ marginTop: '1rem', display: 'block' }}
       >
         View Details
       </Link>

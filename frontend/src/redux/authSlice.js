@@ -11,49 +11,51 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    // Reducer for when an auth action starts
     authStart: (state) => {
       state.loading = true;
       state.error = null;
     },
-    // Reducer for successful auth (login/register)
     authSuccess: (state, action) => {
       state.loading = false;
       state.user = action.payload.user;
       state.token = action.payload.token;
-      localStorage.setItem('token', action.payload.token); // Save token
+      localStorage.setItem('token', action.payload.token);
     },
-    // Reducer for failed auth
     authFail: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },
-    // Reducer for logout
     logout: (state) => {
       state.user = null;
       state.token = null;
-      localStorage.removeItem('token'); 
+      localStorage.removeItem('token');
     },
-
-    // Reducers for getting profile
     getProfileStart: (state) => {
       state.loading = true;
       state.error = null;
     },
     getProfileSuccess: (state, action) => {
       state.loading = false;
-      state.user = action.payload; // Payload is just the user object
+      state.user = action.payload;
     },
     getProfileFail: (state, action) => {
       state.loading = false;
       state.error = action.payload;
-      state.token = null; // Token is invalid or expired, so log them out
+      state.token = null;
       localStorage.removeItem('token');
+    },
+
+    // --- ADDED THIS NEW REDUCER ---
+    updateProfileSuccess: (state, action) => {
+      state.loading = false;
+      // The backend sends back the user and a *new* token
+      state.user = action.payload.user;
+      state.token = action.payload.token;
+      localStorage.setItem('token', action.payload.token);
     },
   },
 });
 
-// Export the actions
 export const {
   authStart,
   authSuccess,
@@ -62,7 +64,7 @@ export const {
   getProfileStart,
   getProfileSuccess,
   getProfileFail,
+  updateProfileSuccess, // <-- Add this
 } = authSlice.actions;
 
-// Export the reducer
 export default authSlice.reducer;
